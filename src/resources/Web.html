@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rabbit消息提示</title>
+    <link rel="stylesheet" type="text/css" href="css/default.css">
+    <link rel="stylesheet" type="text/css" href="css/jquery.notify.css">
+
+
+    <script type="text/javascript" src="js/stomp.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.notify.js"></script>
+
+
+</head>
+
+<body>
+<script type="text/javascript">
+
+    $(function () {
+
+        console.log('进');
+        //设置提示铃声
+        $.notifySetup({sound:'jquery.notify.wav'});
+        //创建客户端
+        var client = Stomp.client("ws://localhost:15674/ws");
+        //定义连接成功时回调函数
+        var onconnect = function(){
+            client.subscribe("/exchange/stomp/shopping.discount",function (message) {//订阅消息地址
+                $("<p>"+message.body+"</p>").notify({stay:10000});
+            });
+        }
+        //定义回调失败时的方法
+        var onerror = function (msg) {
+            $("<p>服务器错误"+meg+"</p>").notify("error");
+        };
+        client.connect("guest","guest",onconnect,onerror,'a');
+        client.heartbeat.incoming = 5000;//心跳检测接受频率
+        client.heartbeat.outgoing = 5000;//心跳检测发送频率
+    })
+
+</script>
+哈哈哈
+</body>
+</html>
